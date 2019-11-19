@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import './App.css';
-import Spot, {SpotProps} from "./Spot";
 import {clearInterval, setInterval} from "timers";
 
 const width = window.innerWidth;
@@ -8,9 +7,22 @@ const height = window.innerHeight;
 const cols = 50;
 const rows = 50;
 const delay = 500;
+const w = 700 / cols;
+const h = 700 / rows;
+
+interface Cell {
+    i: number,
+    j: number,
+    wall: boolean,
+    f: number,
+    g: number,
+    h: number,
+    neighbors: any,
+    previous: any
+}
 
 const App = () => {
-    const [grid, setGrid] = useState<SpotProps[][]>(setInitialGrid());
+    const [grid, setGrid] = useState<Cell[][]>(setInitialGrid());
     const [openSet, setOpenSet] = useState<any>([]);
     const [closedSet, setClosedSet] = useState<any>([]);
     const [isRunning, setRunnning] = useState(true);
@@ -36,7 +48,7 @@ const App = () => {
         }, [delay]);
     }
 
-    function addNeighbors(i: number, j: number, grid: SpotProps[][]) {
+    function addNeighbors(i: number, j: number, grid: Cell[][]) {
         const neighbors = [];
         if (i < cols - 1) {
             neighbors.push(grid[i + 1][j]);
@@ -66,7 +78,7 @@ const App = () => {
     }
 
     function setInitialGrid() {
-        let grid: SpotProps[][] = [];
+        let grid: Cell[][] = [];
 
         for (let i = 0; i < cols; i++) {
             grid[i] = new Array(rows);
@@ -81,8 +93,6 @@ const App = () => {
                     f: 0,
                     g: 0,
                     h: 0,
-                    inClosedSet: false,
-                    inOpenSet: false,
                     neighbors: [],
                     previous: undefined
                 }
@@ -96,7 +106,6 @@ const App = () => {
         }
 
         grid[0][0].wall = false;
-        grid[0][0].inOpenSet = true;
         grid[cols - 1][rows - 1].wall = false;
         return grid;
     }
@@ -188,48 +197,40 @@ const App = () => {
         }
     }
 
-    let walls = [];
-    for (let i = 0; i < cols; i++) {
-        for (let j = 0; j < rows; j++) {
-            if (grid[i][j].wall) {
-                walls.push(<Spot i={i} j={j} wall={grid[i][j].wall} inOpenSet={grid[i][j].inOpenSet}
-                                 inClosedSet={grid[i][j].inClosedSet} key={`${i}-${j}`}/>);
-            }
-        }
-    }
+    const Wall = ({i, j}: { i: number, j: number }) => <ellipse fill={"white"} cx={i * w + w / 2} cy={j * h + h / 2}
+                                                                rx={w / 4} ry={h / 4}/>;
 
     const Walls = () => {
-        let walls = [];
-        for (let i = 0; i < cols; i++) {
-            for (let j = 0; j < rows; j++) {
-                if (grid[i][j].wall) {
-                    walls.push(<Spot i={i} j={j} wall={grid[i][j].wall} inOpenSet={grid[i][j].inOpenSet}
-                                     inClosedSet={grid[i][j].inClosedSet} key={`${i}-${j}`}/>);
-                }
+        return <g>{grid.map((row) => row.reduce((filtered: any, cell: any) => {
+            if (cell.wall) {
+                filtered.push(<Wall i={cell.i} j={cell.j} key={`${cell.i}-${cell.j}`}/>);
             }
-        }
-        return <g>{walls}</g>
+            return filtered;
+        }, []))}</g>
     };
+
+    const Spot = ({i, j, wall, color}: { i: number, j: number, wall: boolean, color: string }) =>
+        <rect x={i * w}
+              y={j * h}
+              width={w}
+              height={h}
+              fill={color}/>;
+
 
     const OpenSet = () => <g>
         {openSet.map((openCell: any) =>
-            <Spot i={openCell.i} j={openCell.j}
+            <Spot i={openCell.i} j={openCell.j} color={'yellow'}
                   wall={openCell.wall}
-                  key={`${openCell.i}-${openCell.j}`}
-                  inClosedSet={false}
-                  inOpenSet={true}/>)}</g>;
+                  key={`${openCell.i}-${openCell.j}`}/>)}</g>;
 
     const ClosedSet = () => <g>
         {closedSet.map((openCell: any) =>
-            <Spot i={openCell.i} j={openCell.j}
+            <Spot i={openCell.i} j={openCell.j} color={'pink'}
                   wall={openCell.wall}
-                  key={`${openCell.i}-${openCell.j}`}
-                  inClosedSet={true}
-                  inOpenSet={false}/>)}</g>;
+                  key={`${openCell.i}-${openCell.j}`}/>)}</g>;
 
 
     const Wrapper = (props: any) => <svg viewBox={`0 0 ${width} ${height}`}>{props.children}</svg>;
-
 
     return (
         <Wrapper>
