@@ -1,12 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import './App.css';
 import {clearInterval, setInterval} from "timers";
 
 const width = window.innerWidth;
 const height = window.innerHeight;
 const cols = 50;
 const rows = 50;
-const delay = 500;
+const delay = 1;
 const w = 700 / cols;
 const h = 700 / rows;
 
