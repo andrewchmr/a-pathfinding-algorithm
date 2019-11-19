@@ -16,18 +16,17 @@ interface Cell {
     f: number,
     g: number,
     h: number,
-    neighbors: any,
-    previous: any
+    neighbors: Cell[],
+    previous: Cell | undefined
 }
 
 const App = () => {
-    const [grid, setGrid] = useState<Cell[][]>(setInitialGrid());
-    const [openSet, setOpenSet] = useState<any>([]);
-    const [closedSet, setClosedSet] = useState<any>([]);
-    const [isRunning, setRunnning] = useState(true);
+    const [grid, setGrid] = useState<Cell[][]>(getInitialGrid());
+    const [openSet, setOpenSet] = useState<Cell[]>([]);
+    const [closedSet, setClosedSet] = useState<Cell[]>([]);
+    const [isRunning, setRunning] = useState<boolean>(true);
     useEffect(() => setOpenSet([...openSet, grid[0][0]]), []);
-
-    useInterval(() => draw(), isRunning ? delay : null);
+    useInterval(() => run(), isRunning ? delay : null);
 
     function useInterval(callback: any, delay: any) {
         const savedCallback = useRef();
@@ -47,7 +46,7 @@ const App = () => {
         }, [delay]);
     }
 
-    function addNeighbors(i: number, j: number, grid: Cell[][]) {
+    function getNeighbors(i: number, j: number, grid: Cell[][]): Cell[] {
         const neighbors = [];
         if (i < cols - 1) {
             neighbors.push(grid[i + 1][j]);
@@ -76,7 +75,7 @@ const App = () => {
         return neighbors;
     }
 
-    function setInitialGrid() {
+    function getInitialGrid(): Cell[][] {
         let grid: Cell[][] = [];
 
         for (let i = 0; i < cols; i++) {
@@ -100,7 +99,7 @@ const App = () => {
 
         for (let i = 0; i < cols; i++) {
             for (let j = 0; j < rows; j++) {
-                grid[i][j].neighbors = addNeighbors(i, j, grid);
+                grid[i][j].neighbors = getNeighbors(i, j, grid);
             }
         }
 
@@ -117,32 +116,37 @@ const App = () => {
         }
     }
 
-    function heuristic(a: any, b: any) {
+    function heuristic(a: Cell, b: Cell) {
         return Math.abs(a.i - b.i) + Math.abs(a.j - b.j);
     }
 
     function restartWithTimeout() {
-        setRunnning(false);
+        setRunning(false);
         setTimeout(() => {
-            const initialGrid = setInitialGrid();
+            const initialGrid = getInitialGrid();
             setGrid(initialGrid);
             setClosedSet([]);
             setOpenSet([...[], initialGrid[0][0]]);
-            setRunnning(true);
+            setRunning(true);
         }, 1000);
     }
 
-    function doDirt() {
+    function findWinnerIndex(): number {
+        let winner = 0;
+        openSet.map((cell: Cell, i: number) => {
+            if (cell.f < openSet[winner].f) {
+                winner = i;
+            }
+        });
+        return winner;
+    }
+
+    function exploreCells() {
         const newOpenSet = [...openSet];
         const newClosedSet = [...closedSet];
         const end = grid[cols - 1][rows - 1];
-        let winner = 0;
-        for (let i = 0; i < newOpenSet.length; i++) {
-            if (newOpenSet[i].f < newOpenSet[winner].f) {
-                winner = i;
-            }
-        }
-        let current = newOpenSet[winner];
+        const winnerIndex = findWinnerIndex();
+        let current = newOpenSet[winnerIndex];
 
         if (current == end) {
             removeFromArray(newOpenSet, current);
@@ -187,20 +191,24 @@ const App = () => {
         setClosedSet(newClosedSet);
     }
 
-    function draw() {
+    function run() {
         if (grid && openSet.length > 0) {
-            doDirt();
+            exploreCells();
         } else {
             restartWithTimeout();
             return;
         }
     }
 
-    const Wall = ({i, j}: { i: number, j: number }) => <ellipse fill={"white"} cx={i * w + w / 2} cy={j * h + h / 2}
-                                                                rx={w / 4} ry={h / 4}/>;
+    const Wall = ({i, j}: { i: number, j: number }) =>
+        <ellipse fill={"white"}
+                 cx={i * w + w / 2}
+                 cy={j * h + h / 2}
+                 rx={w / 4}
+                 ry={h / 4}/>;
 
     const Walls = () => {
-        return <g>{grid.map((row) => row.reduce((filtered: any, cell: any) => {
+        return <g>{grid.map((row) => row.reduce((filtered: JSX.Element[], cell: Cell) => {
             if (cell.wall) {
                 filtered.push(<Wall i={cell.i} j={cell.j} key={`${cell.i}-${cell.j}`}/>);
             }
@@ -216,17 +224,20 @@ const App = () => {
               fill={color}/>;
 
 
-    const OpenSet = () => <g>
-        {openSet.map((openCell: any) =>
-            <Spot i={openCell.i} j={openCell.j} color={'yellow'}
-                  wall={openCell.wall}
-                  key={`${openCell.i}-${openCell.j}`}/>)}</g>;
+    const OpenSet = () => <g>{openSet.map((cell: Cell) =>
+        <Spot i={cell.i}
+              j={cell.j}
+              color={'yellow'}
+              wall={cell.wall}
+              key={`${cell.i}-${cell.j}`}/>)}</g>;
 
     const ClosedSet = () => <g>
-        {closedSet.map((openCell: any) =>
-            <Spot i={openCell.i} j={openCell.j} color={'pink'}
-                  wall={openCell.wall}
-                  key={`${openCell.i}-${openCell.j}`}/>)}</g>;
+        {closedSet.map((cell: Cell) =>
+            <Spot i={cell.i}
+                  j={cell.j}
+                  color={'pink'}
+                  wall={cell.wall}
+                  key={`${cell.i}-${cell.j}`}/>)}</g>;
 
 
     const Wrapper = (props: any) => <svg viewBox={`0 0 ${width} ${height}`}>{props.children}</svg>;
