@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/static/css/main.b981f001.chunk.css",
-    "main.js": "/static/js/main.6e83c37a.chunk.js",
-    "main.js.map": "/static/js/main.6e83c37a.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.ff269b1f.js",
-    "runtime-main.js.map": "/static/js/runtime-main.ff269b1f.js.map",
-    "static/js/2.988d28c1.chunk.js": "/static/js/2.988d28c1.chunk.js",
-    "static/js/2.988d28c1.chunk.js.map": "/static/js/2.988d28c1.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.7609c35cff2984b06d6458c7c3fbbd01.js": "/precache-manifest.7609c35cff2984b06d6458c7c3fbbd01.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/main.b981f001.chunk.css.map": "/static/css/main.b981f001.chunk.css.map"
+    "main.css": "/a-pathfinding-algorithm/static/css/main.b981f001.chunk.css",
+    "main.js": "/a-pathfinding-algorithm/static/js/main.76349ef2.chunk.js",
+    "main.js.map": "/a-pathfinding-algorithm/static/js/main.76349ef2.chunk.js.map",
+    "runtime-main.js": "/a-pathfinding-algorithm/static/js/runtime-main.325be983.js",
+    "runtime-main.js.map": "/a-pathfinding-algorithm/static/js/runtime-main.325be983.js.map",
+    "static/js/2.988d28c1.chunk.js": "/a-pathfinding-algorithm/static/js/2.988d28c1.chunk.js",
+    "static/js/2.988d28c1.chunk.js.map": "/a-pathfinding-algorithm/static/js/2.988d28c1.chunk.js.map",
+    "index.html": "/a-pathfinding-algorithm/index.html",
+    "precache-manifest.7f55e7af28067b28678124b12370cc7f.js": "/a-pathfinding-algorithm/precache-manifest.7f55e7af28067b28678124b12370cc7f.js",
+    "service-worker.js": "/a-pathfinding-algorithm/service-worker.js",
+    "static/css/main.b981f001.chunk.css.map": "/a-pathfinding-algorithm/static/css/main.b981f001.chunk.css.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.ff269b1f.js",
+    "static/js/runtime-main.325be983.js",
     "static/js/2.988d28c1.chunk.js",
     "static/css/main.b981f001.chunk.css",
-    "static/js/main.6e83c37a.chunk.js"
+    "static/js/main.76349ef2.chunk.js"
   ]
 }
