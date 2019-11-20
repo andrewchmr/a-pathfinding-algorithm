@@ -27,6 +27,7 @@ const App = () => {
     const [grid, setGrid] = useState<Cell[][]>(getInitialGrid());
     const [openSet, setOpenSet] = useState<Cell[]>([]);
     const [closedSet, setClosedSet] = useState<Cell[]>([]);
+    const [path, setPath] = useState<Cell[]>([]);
     const [isRunning, setRunning] = useState<boolean>(true);
     useEffect(() => setOpenSet([...openSet, grid[0][0]]), []);
     useInterval(() => run(), isRunning ? delay : null);
@@ -152,7 +153,19 @@ const App = () => {
         removeFromArray(openSet, current);
         setOpenSet(openSet);
         setClosedSet([...closedSet, current]);
+        setPath(getCurrentPath(current));
         restartWithTimeout();
+    }
+
+    function getCurrentPath(current: Cell): Cell[] {
+        const path = [];
+        let temp = current;
+        path.push(temp);
+        while (temp.previous) {
+            path.push(temp.previous);
+            temp = temp.previous;
+        }
+        return path;
     }
 
     function exploreCells() {
@@ -172,6 +185,20 @@ const App = () => {
         checkNeighborsCells(newOpenSet, newClosedSet, current, end);
         setOpenSet(newOpenSet);
         setClosedSet(newClosedSet);
+        setPath(getCurrentPath(current));
+    }
+
+    function getLinePath(path: Cell[]): string {
+        if (path.length > 0) {
+            const firstPoint = `M${path[0].i * w + w / 2},${path[0].j * h + h / 2}`;
+            let buffer = ``;
+            for (let i = 1; i < path.length; i++) {
+                buffer += `L${path[i].i * w + w / 2},${path[i].j * h + h / 2}`;
+            }
+            return `${firstPoint}${buffer}`;
+        } else {
+            return '';
+        }
     }
 
     function checkNeighborsCells(openSet: Cell[], closedSet: Cell[], current: Cell, end: Cell) {
@@ -251,11 +278,15 @@ const App = () => {
     const Wrapper = (props: any) => <svg
         viewBox={`${-width / 2 + moveX} ${-height / 2 + moveY} ${width * 2} ${height * 2}`}>{props.children}</svg>;
 
+    const Path = () => <path strokeWidth={w / 2} strokeLinecap="round" d={getLinePath(path)} fill={'none'}
+                             stroke={'purple'}/>;
+
     return (
         <Wrapper>
             <Walls/>
             <OpenSet/>
             <ClosedSet/>
+            <Path/>
         </Wrapper>
     );
 };
