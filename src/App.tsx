@@ -3,11 +3,14 @@ import {clearInterval, setInterval} from "timers";
 
 const width = window.innerWidth;
 const height = window.innerHeight;
-const cols = 50;
-const rows = 50;
+const cols = 30;
+const rows = 30;
 const delay = 30;
-const w = 700 / cols;
-const h = 700 / rows;
+const d = width > height ? height : width;
+const w = d / cols;
+const h = d / rows;
+const moveX = width > height ? -d / 2 : 0;
+const moveY = width > height ? 0 : -d / 4;
 
 interface Cell {
     i: number,
@@ -245,7 +248,8 @@ const App = () => {
                   key={`${cell.i}-${cell.j}`}/>)}</g>;
 
 
-    const Wrapper = (props: any) => <svg viewBox={`0 0 ${width} ${height}`}>{props.children}</svg>;
+    const Wrapper = (props: any) => <svg
+        viewBox={`${-width / 2 + moveX} ${-height / 2 + moveY} ${width * 2} ${height * 2}`}>{props.children}</svg>;
 
     return (
         <Wrapper>
