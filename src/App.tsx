@@ -5,7 +5,7 @@ const width = window.innerWidth;
 const height = window.innerHeight;
 const cols = 50;
 const rows = 50;
-const delay = 1;
+const delay = 30;
 const w = 700 / cols;
 const h = 700 / rows;
 
@@ -108,7 +108,7 @@ const App = () => {
         return grid;
     }
 
-    function removeFromArray(arr: any, elt: any) {
+    function removeFromArray(arr: Cell[], elt: Cell) {
         for (let i = arr.length - 1; i >= 0; i--) {
             if (arr[i] === elt) {
                 arr.splice(i, 1);
@@ -133,12 +133,23 @@ const App = () => {
 
     function findWinnerIndex(): number {
         let winner = 0;
-        openSet.map((cell: Cell, i: number) => {
+        openSet.forEach((cell: Cell, i: number) => {
             if (cell.f < openSet[winner].f) {
                 winner = i;
             }
         });
         return winner;
+    }
+
+    function cellsEqual(a: Cell, b: Cell): boolean {
+        return a.i === b.i && a.j === b.j;
+    }
+
+    function handleEndSuccess(openSet: Cell[], closedSet: Cell[], current: Cell) {
+        removeFromArray(openSet, current);
+        setOpenSet(openSet);
+        setClosedSet([...closedSet, current]);
+        restartWithTimeout();
     }
 
     function exploreCells() {
@@ -148,27 +159,24 @@ const App = () => {
         const winnerIndex = findWinnerIndex();
         let current = newOpenSet[winnerIndex];
 
-        if (current == end) {
-            removeFromArray(newOpenSet, current);
-            newClosedSet.push(current);
-            setOpenSet(newOpenSet);
-            setClosedSet(newClosedSet);
-            restartWithTimeout();
+        if (cellsEqual(current, end)) {
+            handleEndSuccess(newOpenSet, newClosedSet, current);
             return;
         }
 
         removeFromArray(newOpenSet, current);
         newClosedSet.push(current);
+        checkNeighborsCells(newOpenSet, newClosedSet, current, end);
+        setOpenSet(newOpenSet);
+        setClosedSet(newClosedSet);
+    }
 
-        let neighbors = current.neighbors;
-        for (let i = 0; i < neighbors.length; i++) {
-            let neighbor = neighbors[i];
-
-            if (!newClosedSet.includes(neighbor) && !neighbor.wall) {
+    function checkNeighborsCells(openSet: Cell[], closedSet: Cell[], current: Cell, end: Cell) {
+        current.neighbors.forEach((neighbor) => {
+            if (!closedSet.includes(neighbor) && !neighbor.wall) {
                 let tempG = current.g + heuristic(neighbor, current);
-
                 let newPath = false;
-                if (newOpenSet.includes(neighbor)) {
+                if (openSet.includes(neighbor)) {
                     if (tempG < neighbor.g) {
                         neighbor.g = tempG;
                         newPath = true;
@@ -176,7 +184,7 @@ const App = () => {
                 } else {
                     neighbor.g = tempG;
                     newPath = true;
-                    newOpenSet.push(neighbor);
+                    openSet.push(neighbor);
                 }
 
                 if (newPath) {
@@ -185,10 +193,7 @@ const App = () => {
                     neighbor.previous = current;
                 }
             }
-
-        }
-        setOpenSet(newOpenSet);
-        setClosedSet(newClosedSet);
+        });
     }
 
     function run() {
@@ -235,7 +240,7 @@ const App = () => {
         {closedSet.map((cell: Cell) =>
             <Spot i={cell.i}
                   j={cell.j}
-                  color={'pink'}
+                  color={'lightgrey'}
                   wall={cell.wall}
                   key={`${cell.i}-${cell.j}`}/>)}</g>;
 
