@@ -5,6 +5,7 @@ import {Path} from "./Path/Path";
 import {SvgWrapper} from "./SvgWrapper/SvgWrapper";
 import {Set} from "./Set/Set";
 import {Walls} from "./Walls/Walls";
+import {Spot} from "./Set/Spot/Spot";
 
 const {cols, rows, height, width} = config;
 export const d = width > height ? height : width;
@@ -26,6 +27,7 @@ const PathfindingAlgorithm = ({grid, openSet, closedSet, path}: PathfindingAlgor
             <Walls grid={grid}/>
             <Set cells={openSet} color={'yellow'}/>
             <Set cells={closedSet} color={'lightgrey'}/>
+            <Spot i={rows - 1} j={cols - 1} color={'lime'}/>
             <Path path={path}/>
         </SvgWrapper>
     );
