@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import PathfindingAlgorithmContainer from "./PathfindingAlgorithmContainer";
+import PathfindingAlgorithmContainer from "./containers/PathfindingAlgorithm/PathfindingAlgorithmContainer";
 
 ReactDOM.render(<PathfindingAlgorithmContainer />, document.getElementById('root'));
 

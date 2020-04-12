@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {clearInterval, setInterval} from "timers";
-import PathfindingAlgorithmView from "./PathfindingAlgorithmView";
-import {Cell} from "./types";
-import {config} from "./config";
+import PathfindingAlgorithm from "../../components/PathfindingAlgorithm/PathfindingAlgorithm";
+import {Cell} from "../../types";
+import {config} from "../../config";
 
 const cols = config.cols;
 const rows = config.rows;
@@ -16,7 +16,7 @@ const PathfindingAlgorithmContainer = () => {
     useEffect(() => setOpenSet([...openSet, grid[0][0]]), []);
     useInterval(() => run(), isRunning ? 30 : null);
 
-    function useInterval(callback: any, delay: any) {
+    function useInterval(callback: any, delay: number | null) {
         const savedCallback = useRef();
         useEffect(() => {
             savedCallback.current = callback;
@@ -207,7 +207,7 @@ const PathfindingAlgorithmContainer = () => {
     }
 
     return (
-        <PathfindingAlgorithmView grid={grid} openSet={openSet} closedSet={closedSet} path={path}/>
+        <PathfindingAlgorithm grid={grid} openSet={openSet} closedSet={closedSet} path={path}/>
     );
 };
 
