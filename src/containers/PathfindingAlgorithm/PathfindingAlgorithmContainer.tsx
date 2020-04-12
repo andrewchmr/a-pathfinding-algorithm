@@ -1,38 +1,19 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {clearInterval, setInterval} from "timers";
+import React, {useState} from 'react';
 import PathfindingAlgorithm from "../../components/PathfindingAlgorithm/PathfindingAlgorithm";
 import {Cell} from "../../types";
 import {config} from "../../config";
+import {useInterval} from "../../hooks/useInterval";
 
 const cols = config.cols;
 const rows = config.rows;
 
 const PathfindingAlgorithmContainer = () => {
     const [grid, setGrid] = useState<Cell[][]>(getInitialGrid());
-    const [openSet, setOpenSet] = useState<Cell[]>([]);
+    const [openSet, setOpenSet] = useState<Cell[]>([grid[0][0]]);
     const [closedSet, setClosedSet] = useState<Cell[]>([]);
     const [path, setPath] = useState<Cell[]>([]);
     const [isRunning, setRunning] = useState<boolean>(true);
-    useEffect(() => setOpenSet([...openSet, grid[0][0]]), []);
     useInterval(() => run(), isRunning ? 30 : null);
-
-    function useInterval(callback: any, delay: number | null) {
-        const savedCallback = useRef();
-        useEffect(() => {
-            savedCallback.current = callback;
-        }, [callback]);
-
-        useEffect(() => {
-            function tick() {
-                (savedCallback as any).current();
-            }
-
-            if (delay !== null) {
-                let id = setInterval(tick, delay);
-                return () => clearInterval(id);
-            }
-        }, [delay]);
-    }
 
     function getNeighbors(i: number, j: number, grid: Cell[][]): Cell[] {
         const neighbors = [];

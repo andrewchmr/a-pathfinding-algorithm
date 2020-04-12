@@ -6,15 +6,24 @@ import {SvgWrapper} from "./SvgWrapper/SvgWrapper";
 import {Set} from "./Set/Set";
 import {Walls} from "./Walls/Walls";
 
-const cols = config.cols;
-const rows = config.rows;
 export const width = window.innerWidth;
 export const height = window.innerHeight;
+const cols = config.cols;
+const rows = config.rows;
 export const d = width > height ? height : width;
 export const w = d / cols;
 export const h = d / rows;
+export const moveX = width > height ? -d / 2 : 0;
+export const moveY = width > height ? 0 : -d / 4;
 
-const PathfindingAlgorithm = ({grid, openSet, closedSet, path}: { grid: Cell[][], openSet: Cell[], closedSet: Cell[], path: Cell[] }) => {
+interface PathfindingAlgorithmProps {
+    grid: Cell[][],
+    openSet: Cell[],
+    closedSet: Cell[],
+    path: Cell[]
+}
+
+const PathfindingAlgorithm = ({grid, openSet, closedSet, path}: PathfindingAlgorithmProps) => {
     return (
         <SvgWrapper>
             <Walls grid={grid}/>
