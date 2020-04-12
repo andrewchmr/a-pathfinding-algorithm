@@ -1,10 +1,14 @@
 # A* Pathfinding Algorithm Visualisation
 
-Demo: https://andrewchmr.github.io/a-pathfinding-algorithm/
+## Demo
+
+https://andrewchmr.github.io/a-pathfinding-algorithm/
 
 ![alt text](https://github.com/andrewchmr/a-pathfinding-algorithm/blob/master/images/Pathfinding.png?raw=true)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Technologies used
+
+React.js, svg
 
 ## Available Scripts
 
