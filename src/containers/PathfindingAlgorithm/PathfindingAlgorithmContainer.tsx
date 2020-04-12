@@ -13,7 +13,7 @@ const PathfindingAlgorithmContainer = () => {
     const [closedSet, setClosedSet] = useState<Cell[]>([]);
     const [path, setPath] = useState<Cell[]>([]);
     const [isRunning, setRunning] = useState<boolean>(true);
-    useInterval(() => run(), isRunning ? 30 : null);
+    useInterval(() => run(), isRunning ? 100 : null);
 
     function getNeighbors(i: number, j: number, grid: Cell[][]): Cell[] {
         const neighbors = [];

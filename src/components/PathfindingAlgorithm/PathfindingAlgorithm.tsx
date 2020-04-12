@@ -6,10 +6,7 @@ import {SvgWrapper} from "./SvgWrapper/SvgWrapper";
 import {Set} from "./Set/Set";
 import {Walls} from "./Walls/Walls";
 
-export const width = window.innerWidth;
-export const height = window.innerHeight;
-const cols = config.cols;
-const rows = config.rows;
+const {cols, rows, height, width} = config;
 export const d = width > height ? height : width;
 export const w = d / cols;
 export const h = d / rows;

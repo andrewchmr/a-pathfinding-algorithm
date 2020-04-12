@@ -16,3 +16,13 @@ svg{
   position: fixed;
   background-color: black;
 }
+
+h2{
+  position: absolute;
+  color: white;
+  display: flex;
+  z-index: 10;
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
